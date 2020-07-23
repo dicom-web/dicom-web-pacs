@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lainiao.dicom.scp.dao.base.SeriesBaseMapper">
+
+
+    <insert id="insertSeries"  useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `series`
+        (
+        <trim suffixOverrides=",">
+                    <if test="id!=null">
+                        `id`,
+                    </if>
+                    <if test="studyId!=null">
+                        `study_id`,
+                    </if>
+                    <if test="seriesUid!=null">
+                        `series_uid`,
+                    </if>
+        </trim>
+        )
+        VALUES
+        (
+        <trim suffixOverrides=",">
+                <if test="id!=null">
+                    #{id},
+                </if>
+                <if test="studyId!=null">
+                    #{studyId},
+                </if>
+                <if test="seriesUid!=null">
+                    #{seriesUid},
+                </if>
+        </trim>
+        )
+    </insert>
+
+
+
+
+    <update id="updateSeries">
+        UPDATE `series`
+        SET
+        <trim suffixOverrides=",">
+            <if test="studyId != null">
+                `study_id` = #{studyId},
+            </if>
+            <if test="seriesUid != null and seriesUid!=''">
+                `series_uid` = #{seriesUid},
+            </if>
+        </trim>
+        WHERE
+        <trim suffixOverrides="and">
+                `id` = #{id} and
+        </trim>
+    </update>
+
+    <update id="update">
+        UPDATE `series`
+        SET
+        <trim suffixOverrides=",">
+        <if test="set.studyId != null">
+            `study_id` = #{set.studyId},
+        </if>
+        <if test="set.seriesUid != null and set.seriesUid!=''">
+            `series_uid` = #{set.seriesUid},
+        </if>
+        </trim>
+        <trim prefix="where" suffixOverrides="and | or">
+                <if test="where.idList != null">
+                    `id` in
+                    <foreach collection="where.idList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test="where.idSt !=null">
+                `id` >= #{where.idSt} and
+            </if>
+            <if test="where.idEd!=null">
+                `id` &lt;= #{where.idEd} and
+            </if>
+                <if test="where.studyIdList != null">
+                    `study_id` in
+                    <foreach collection="where.studyIdList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test="where.studyIdSt !=null">
+                `study_id` >= #{where.studyIdSt} and
+            </if>
+            <if test="where.studyIdEd!=null">
+                `study_id` &lt;= #{where.studyIdEd} and
+            </if>
+                <if test="where.seriesUidList != null">
+                    `series_uid` in
+                    <foreach collection="where.seriesUidList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test ="where.fuzzySeriesUid!=null and where.fuzzySeriesUid.size()>0">
+                (
+                <foreach collection="where.fuzzySeriesUid"  separator="or" item="item">
+                    `Series_uid` like concat('%',#{item},'%')
+                </foreach>
+                ) and
+            </if>
+            <if test ="where.rightFuzzySeriesUid!=null and where.rightFuzzySeriesUid.size()>0">
+                (
+                <foreach collection="where.rightFuzzySeriesUid"  separator="or" item="item">
+                    `Series_uid` like concat(#{item},'%')
+                </foreach>
+                ) and
+            </if>
+        </trim>
+    </update>
+
+
+    <resultMap type="net.lainiao.dicom.scp.entity.Series" id="SeriesMap">
+        <result property="id" column="id"/>
+        <result property="studyId" column="study_id"/>
+        <result property="seriesUid" column="series_uid"/>
+    </resultMap>
+
+
+    <select id="querySeries" resultMap="SeriesMap">
+        select
+        <include refid="baseResult"></include>
+        from  `series`
+        <trim prefix="where" suffixOverrides="and | or">
+            <if test="id != null">
+                `id` = #{id} and
+            </if>
+            <if test="studyId != null">
+                `study_id` = #{studyId} and
+            </if>
+            <if test="seriesUid != null and seriesUid!=''">
+                `series_uid` = #{seriesUid} and
+            </if>
+            <if test = "(_parameter instanceof net.lainiao.dicom.scp.entity.Series$QueryBuilder) == true">
+                <if test="idList != null">
+                    `id` in
+                    <foreach collection="idList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test="idSt !=null">
+                    `id` >= #{idSt} and
+                </if>
+                <if test="idEd!=null">
+                    `id` &lt;= #{idEd} and
+                </if>
+                <if test="studyIdList != null">
+                    `study_id` in
+                    <foreach collection="studyIdList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test="studyIdSt !=null">
+                    `study_id` >= #{studyIdSt} and
+                </if>
+                <if test="studyIdEd!=null">
+                    `study_id` &lt;= #{studyIdEd} and
+                </if>
+                <if test="seriesUidList != null">
+                    `series_uid` in
+                    <foreach collection="seriesUidList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test ="fuzzySeriesUid!=null and fuzzySeriesUid.size()>0">
+                    (
+                    <foreach collection="fuzzySeriesUid"  separator="or" item="item">
+                        `Series_uid` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzySeriesUid!=null and rightFuzzySeriesUid.size()>0">
+                    (
+                    <foreach collection="rightFuzzySeriesUid"  separator="or" item="item">
+                        `Series_uid` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+            </if>
+        </trim>
+    </select>
+
+    <select id="querySeriesLimit1" resultMap="SeriesMap">
+        select
+        <include refid="baseResult"></include>
+        from  `series`
+        <trim prefix="where" suffixOverrides="and | or">
+            <if test="id != null">
+                `id` = #{id} and
+            </if>
+            <if test="studyId != null">
+                `study_id` = #{studyId} and
+            </if>
+            <if test="seriesUid != null and seriesUid!=''">
+                `series_uid` = #{seriesUid} and
+            </if>
+            <if test = "(_parameter instanceof net.lainiao.dicom.scp.entity.Series$QueryBuilder) == true">
+                    <if test="idList != null">
+                        `id` in
+                        <foreach collection="idList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test="idSt !=null">
+                    `id` >= #{idSt} and
+                </if>
+                <if test="idEd!=null">
+                    `id` &lt;= #{idEd} and
+                </if>
+                    <if test="studyIdList != null">
+                        `study_id` in
+                        <foreach collection="studyIdList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test="studyIdSt !=null">
+                    `study_id` >= #{studyIdSt} and
+                </if>
+                <if test="studyIdEd!=null">
+                    `study_id` &lt;= #{studyIdEd} and
+                </if>
+                    <if test="seriesUidList != null">
+                        `series_uid` in
+                        <foreach collection="seriesUidList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test ="fuzzySeriesUid!=null and fuzzySeriesUid.size()>0">
+                    (
+                    <foreach collection="fuzzySeriesUid"  separator="or" item="item">
+                        `Series_uid` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzySeriesUid!=null and rightFuzzySeriesUid.size()>0">
+                    (
+                    <foreach collection="rightFuzzySeriesUid"  separator="or" item="item">
+                        `Series_uid` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+            </if>
+        </trim>
+        limit 1
+    </select>
+
+    <sql id="allResult">
+        <trim suffixOverrides=",">
+        `id`,
+        `study_id`,
+        `series_uid`,
+        </trim>
+    </sql>
+
+
+
+    <sql id="baseResult">
+        <trim suffixOverrides=",">
+            <if test = "(_parameter instanceof net.lainiao.dicom.scp.entity.Series$QueryBuilder) == true">
+
+                <if test="fetchFields==null">
+                    <include refid="allResult"></include>
+                </if>
+                <if test="fetchFields!=null">
+                    <if test="fetchFields.AllFields !=null">
+                        <include refid="allResult"></include>
+                    </if>
+                    <if test="fetchFields.AllFields ==null and fetchFields.fetchFields==null and fetchFields.excludeFields==null and fetchFields.otherFields==null">
+                        <include refid="allResult"></include>
+                    </if>
+                    <if test="fetchFields.AllFields==null and fetchFields.fetchFields!=null">
+                    <if test="fetchFields.fetchFields.id==true">
+                        `id`,
+                    </if>
+                    <if test="fetchFields.fetchFields.studyId==true">
+                        `study_id`,
+                    </if>
+                    <if test="fetchFields.fetchFields.seriesUid==true">
+                        `series_uid`,
+                    </if>
+                    </if>
+                    <if test="fetchFields.AllFields==null and fetchFields.excludeFields!=null">
+                    <if test="fetchFields.excludeFields.id==null">
+                        `id`,
+                    </if>
+                    <if test="fetchFields.excludeFields.studyId==null">
+                        `study_id`,
+                    </if>
+                    <if test="fetchFields.excludeFields.seriesUid==null">
+                        `series_uid`,
+                    </if>
+                    </if>
+                    <if test="fetchFields.otherFields!=null and fetchFields.otherFields.size>0">
+                        <foreach collection="fetchFields.otherFields" index="index" item="item" separator=",">
+                        `#{item}`
+                        </foreach>
+                    </if>
+                </if>
+            </if>
+            <if test="(_parameter instanceof net.lainiao.dicom.scp.entity.Series$QueryBuilder) == false" >
+                <include refid="allResult"></include>
+            </if>
+
+        </trim>
+    </sql>
+
+
+</mapper>

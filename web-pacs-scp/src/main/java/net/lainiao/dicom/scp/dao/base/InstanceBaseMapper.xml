@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lainiao.dicom.scp.dao.base.InstanceBaseMapper">
+
+
+    <insert id="insertInstance"  useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `instance`
+        (
+        <trim suffixOverrides=",">
+                    <if test="id!=null">
+                        `id`,
+                    </if>
+                    <if test="seriesId!=null">
+                        `series_id`,
+                    </if>
+                    <if test="instanceUid!=null">
+                        `instance_uid`,
+                    </if>
+                    <if test="instanceNum!=null">
+                        `instance_num`,
+                    </if>
+                    <if test="objectName!=null">
+                        `object_name`,
+                    </if>
+        </trim>
+        )
+        VALUES
+        (
+        <trim suffixOverrides=",">
+                <if test="id!=null">
+                    #{id},
+                </if>
+                <if test="seriesId!=null">
+                    #{seriesId},
+                </if>
+                <if test="instanceUid!=null">
+                    #{instanceUid},
+                </if>
+                <if test="instanceNum!=null">
+                    #{instanceNum},
+                </if>
+                <if test="objectName!=null">
+                    #{objectName},
+                </if>
+        </trim>
+        )
+    </insert>
+
+
+
+
+    <update id="updateInstance">
+        UPDATE `instance`
+        SET
+        <trim suffixOverrides=",">
+            <if test="seriesId != null">
+                `series_id` = #{seriesId},
+            </if>
+            <if test="instanceUid != null and instanceUid!=''">
+                `instance_uid` = #{instanceUid},
+            </if>
+            <if test="instanceNum != null">
+                `instance_num` = #{instanceNum},
+            </if>
+            <if test="objectName != null and objectName!=''">
+                `object_name` = #{objectName},
+            </if>
+        </trim>
+        WHERE
+        <trim suffixOverrides="and">
+                `id` = #{id} and
+        </trim>
+    </update>
+
+    <update id="update">
+        UPDATE `instance`
+        SET
+        <trim suffixOverrides=",">
+        <if test="set.seriesId != null">
+            `series_id` = #{set.seriesId},
+        </if>
+        <if test="set.instanceUid != null and set.instanceUid!=''">
+            `instance_uid` = #{set.instanceUid},
+        </if>
+        <if test="set.instanceNum != null">
+            `instance_num` = #{set.instanceNum},
+        </if>
+        <if test="set.objectName != null and set.objectName!=''">
+            `object_name` = #{set.objectName},
+        </if>
+        </trim>
+        <trim prefix="where" suffixOverrides="and | or">
+                <if test="where.idList != null">
+                    `id` in
+                    <foreach collection="where.idList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test="where.idSt !=null">
+                `id` >= #{where.idSt} and
+            </if>
+            <if test="where.idEd!=null">
+                `id` &lt;= #{where.idEd} and
+            </if>
+                <if test="where.seriesIdList != null">
+                    `series_id` in
+                    <foreach collection="where.seriesIdList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test="where.seriesIdSt !=null">
+                `series_id` >= #{where.seriesIdSt} and
+            </if>
+            <if test="where.seriesIdEd!=null">
+                `series_id` &lt;= #{where.seriesIdEd} and
+            </if>
+                <if test="where.instanceUidList != null">
+                    `instance_uid` in
+                    <foreach collection="where.instanceUidList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test ="where.fuzzyInstanceUid!=null and where.fuzzyInstanceUid.size()>0">
+                (
+                <foreach collection="where.fuzzyInstanceUid"  separator="or" item="item">
+                    `Instance_uid` like concat('%',#{item},'%')
+                </foreach>
+                ) and
+            </if>
+            <if test ="where.rightFuzzyInstanceUid!=null and where.rightFuzzyInstanceUid.size()>0">
+                (
+                <foreach collection="where.rightFuzzyInstanceUid"  separator="or" item="item">
+                    `Instance_uid` like concat(#{item},'%')
+                </foreach>
+                ) and
+            </if>
+                <if test="where.instanceNumList != null">
+                    `instance_num` in
+                    <foreach collection="where.instanceNumList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test="where.instanceNumSt !=null">
+                `instance_num` >= #{where.instanceNumSt} and
+            </if>
+            <if test="where.instanceNumEd!=null">
+                `instance_num` &lt;= #{where.instanceNumEd} and
+            </if>
+                <if test="where.objectNameList != null">
+                    `object_name` in
+                    <foreach collection="where.objectNameList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test ="where.fuzzyObjectName!=null and where.fuzzyObjectName.size()>0">
+                (
+                <foreach collection="where.fuzzyObjectName"  separator="or" item="item">
+                    `Object_name` like concat('%',#{item},'%')
+                </foreach>
+                ) and
+            </if>
+            <if test ="where.rightFuzzyObjectName!=null and where.rightFuzzyObjectName.size()>0">
+                (
+                <foreach collection="where.rightFuzzyObjectName"  separator="or" item="item">
+                    `Object_name` like concat(#{item},'%')
+                </foreach>
+                ) and
+            </if>
+        </trim>
+    </update>
+
+
+    <resultMap type="net.lainiao.dicom.scp.entity.Instance" id="InstanceMap">
+        <result property="id" column="id"/>
+        <result property="seriesId" column="series_id"/>
+        <result property="instanceUid" column="instance_uid"/>
+        <result property="instanceNum" column="instance_num"/>
+        <result property="objectName" column="object_name"/>
+    </resultMap>
+
+
+    <select id="queryInstance" resultMap="InstanceMap">
+        select
+        <include refid="baseResult"></include>
+        from  `instance`
+        <trim prefix="where" suffixOverrides="and | or">
+            <if test="id != null">
+                `id` = #{id} and
+            </if>
+            <if test="seriesId != null">
+                `series_id` = #{seriesId} and
+            </if>
+            <if test="instanceUid != null and instanceUid!=''">
+                `instance_uid` = #{instanceUid} and
+            </if>
+            <if test="instanceNum != null">
+                `instance_num` = #{instanceNum} and
+            </if>
+            <if test="objectName != null and objectName!=''">
+                `object_name` = #{objectName} and
+            </if>
+            <if test = "(_parameter instanceof net.lainiao.dicom.scp.entity.Instance$QueryBuilder) == true">
+                <if test="idList != null">
+                    `id` in
+                    <foreach collection="idList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test="idSt !=null">
+                    `id` >= #{idSt} and
+                </if>
+                <if test="idEd!=null">
+                    `id` &lt;= #{idEd} and
+                </if>
+                <if test="seriesIdList != null">
+                    `series_id` in
+                    <foreach collection="seriesIdList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test="seriesIdSt !=null">
+                    `series_id` >= #{seriesIdSt} and
+                </if>
+                <if test="seriesIdEd!=null">
+                    `series_id` &lt;= #{seriesIdEd} and
+                </if>
+                <if test="instanceUidList != null">
+                    `instance_uid` in
+                    <foreach collection="instanceUidList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test ="fuzzyInstanceUid!=null and fuzzyInstanceUid.size()>0">
+                    (
+                    <foreach collection="fuzzyInstanceUid"  separator="or" item="item">
+                        `Instance_uid` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyInstanceUid!=null and rightFuzzyInstanceUid.size()>0">
+                    (
+                    <foreach collection="rightFuzzyInstanceUid"  separator="or" item="item">
+                        `Instance_uid` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test="instanceNumList != null">
+                    `instance_num` in
+                    <foreach collection="instanceNumList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test="instanceNumSt !=null">
+                    `instance_num` >= #{instanceNumSt} and
+                </if>
+                <if test="instanceNumEd!=null">
+                    `instance_num` &lt;= #{instanceNumEd} and
+                </if>
+                <if test="objectNameList != null">
+                    `object_name` in
+                    <foreach collection="objectNameList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test ="fuzzyObjectName!=null and fuzzyObjectName.size()>0">
+                    (
+                    <foreach collection="fuzzyObjectName"  separator="or" item="item">
+                        `Object_name` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyObjectName!=null and rightFuzzyObjectName.size()>0">
+                    (
+                    <foreach collection="rightFuzzyObjectName"  separator="or" item="item">
+                        `Object_name` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+            </if>
+        </trim>
+    </select>
+
+    <select id="queryInstanceLimit1" resultMap="InstanceMap">
+        select
+        <include refid="baseResult"></include>
+        from  `instance`
+        <trim prefix="where" suffixOverrides="and | or">
+            <if test="id != null">
+                `id` = #{id} and
+            </if>
+            <if test="seriesId != null">
+                `series_id` = #{seriesId} and
+            </if>
+            <if test="instanceUid != null and instanceUid!=''">
+                `instance_uid` = #{instanceUid} and
+            </if>
+            <if test="instanceNum != null">
+                `instance_num` = #{instanceNum} and
+            </if>
+            <if test="objectName != null and objectName!=''">
+                `object_name` = #{objectName} and
+            </if>
+            <if test = "(_parameter instanceof net.lainiao.dicom.scp.entity.Instance$QueryBuilder) == true">
+                    <if test="idList != null">
+                        `id` in
+                        <foreach collection="idList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test="idSt !=null">
+                    `id` >= #{idSt} and
+                </if>
+                <if test="idEd!=null">
+                    `id` &lt;= #{idEd} and
+                </if>
+                    <if test="seriesIdList != null">
+                        `series_id` in
+                        <foreach collection="seriesIdList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test="seriesIdSt !=null">
+                    `series_id` >= #{seriesIdSt} and
+                </if>
+                <if test="seriesIdEd!=null">
+                    `series_id` &lt;= #{seriesIdEd} and
+                </if>
+                    <if test="instanceUidList != null">
+                        `instance_uid` in
+                        <foreach collection="instanceUidList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test ="fuzzyInstanceUid!=null and fuzzyInstanceUid.size()>0">
+                    (
+                    <foreach collection="fuzzyInstanceUid"  separator="or" item="item">
+                        `Instance_uid` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyInstanceUid!=null and rightFuzzyInstanceUid.size()>0">
+                    (
+                    <foreach collection="rightFuzzyInstanceUid"  separator="or" item="item">
+                        `Instance_uid` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                    <if test="instanceNumList != null">
+                        `instance_num` in
+                        <foreach collection="instanceNumList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test="instanceNumSt !=null">
+                    `instance_num` >= #{instanceNumSt} and
+                </if>
+                <if test="instanceNumEd!=null">
+                    `instance_num` &lt;= #{instanceNumEd} and
+                </if>
+                    <if test="objectNameList != null">
+                        `object_name` in
+                        <foreach collection="objectNameList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test ="fuzzyObjectName!=null and fuzzyObjectName.size()>0">
+                    (
+                    <foreach collection="fuzzyObjectName"  separator="or" item="item">
+                        `Object_name` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyObjectName!=null and rightFuzzyObjectName.size()>0">
+                    (
+                    <foreach collection="rightFuzzyObjectName"  separator="or" item="item">
+                        `Object_name` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+            </if>
+        </trim>
+        limit 1
+    </select>
+
+    <sql id="allResult">
+        <trim suffixOverrides=",">
+        `id`,
+        `series_id`,
+        `instance_uid`,
+        `instance_num`,
+        `object_name`,
+        </trim>
+    </sql>
+
+
+
+    <sql id="baseResult">
+        <trim suffixOverrides=",">
+            <if test = "(_parameter instanceof net.lainiao.dicom.scp.entity.Instance$QueryBuilder) == true">
+
+                <if test="fetchFields==null">
+                    <include refid="allResult"></include>
+                </if>
+                <if test="fetchFields!=null">
+                    <if test="fetchFields.AllFields !=null">
+                        <include refid="allResult"></include>
+                    </if>
+                    <if test="fetchFields.AllFields ==null and fetchFields.fetchFields==null and fetchFields.excludeFields==null and fetchFields.otherFields==null">
+                        <include refid="allResult"></include>
+                    </if>
+                    <if test="fetchFields.AllFields==null and fetchFields.fetchFields!=null">
+                    <if test="fetchFields.fetchFields.id==true">
+                        `id`,
+                    </if>
+                    <if test="fetchFields.fetchFields.seriesId==true">
+                        `series_id`,
+                    </if>
+                    <if test="fetchFields.fetchFields.instanceUid==true">
+                        `instance_uid`,
+                    </if>
+                    <if test="fetchFields.fetchFields.instanceNum==true">
+                        `instance_num`,
+                    </if>
+                    <if test="fetchFields.fetchFields.objectName==true">
+                        `object_name`,
+                    </if>
+                    </if>
+                    <if test="fetchFields.AllFields==null and fetchFields.excludeFields!=null">
+                    <if test="fetchFields.excludeFields.id==null">
+                        `id`,
+                    </if>
+                    <if test="fetchFields.excludeFields.seriesId==null">
+                        `series_id`,
+                    </if>
+                    <if test="fetchFields.excludeFields.instanceUid==null">
+                        `instance_uid`,
+                    </if>
+                    <if test="fetchFields.excludeFields.instanceNum==null">
+                        `instance_num`,
+                    </if>
+                    <if test="fetchFields.excludeFields.objectName==null">
+                        `object_name`,
+                    </if>
+                    </if>
+                    <if test="fetchFields.otherFields!=null and fetchFields.otherFields.size>0">
+                        <foreach collection="fetchFields.otherFields" index="index" item="item" separator=",">
+                        `#{item}`
+                        </foreach>
+                    </if>
+                </if>
+            </if>
+            <if test="(_parameter instanceof net.lainiao.dicom.scp.entity.Instance$QueryBuilder) == false" >
+                <include refid="allResult"></include>
+            </if>
+
+        </trim>
+    </sql>
+
+
+</mapper>

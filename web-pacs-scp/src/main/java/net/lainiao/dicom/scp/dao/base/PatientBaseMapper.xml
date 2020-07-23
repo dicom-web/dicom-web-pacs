@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lainiao.dicom.scp.dao.base.PatientBaseMapper">
+
+
+    <insert id="insertPatient"  useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `patient`
+        (
+        <trim suffixOverrides=",">
+                    <if test="id!=null">
+                        `id`,
+                    </if>
+                    <if test="patName!=null">
+                        `pat_name`,
+                    </if>
+                    <if test="patNumber!=null">
+                        `pat_number`,
+                    </if>
+                    <if test="birthDay!=null">
+                        `birth_day`,
+                    </if>
+                    <if test="gender!=null">
+                        `gender`,
+                    </if>
+        </trim>
+        )
+        VALUES
+        (
+        <trim suffixOverrides=",">
+                <if test="id!=null">
+                    #{id},
+                </if>
+                <if test="patName!=null">
+                    #{patName},
+                </if>
+                <if test="patNumber!=null">
+                    #{patNumber},
+                </if>
+                <if test="birthDay!=null">
+                    #{birthDay},
+                </if>
+                <if test="gender!=null">
+                    #{gender},
+                </if>
+        </trim>
+        )
+    </insert>
+
+
+
+
+    <update id="updatePatient">
+        UPDATE `patient`
+        SET
+        <trim suffixOverrides=",">
+            <if test="patName != null and patName!=''">
+                `pat_name` = #{patName},
+            </if>
+            <if test="patNumber != null and patNumber!=''">
+                `pat_number` = #{patNumber},
+            </if>
+            <if test="birthDay != null and birthDay!=''">
+                `birth_day` = #{birthDay},
+            </if>
+            <if test="gender != null and gender!=''">
+                `gender` = #{gender},
+            </if>
+        </trim>
+        WHERE
+        <trim suffixOverrides="and">
+                `id` = #{id} and
+        </trim>
+    </update>
+
+    <update id="update">
+        UPDATE `patient`
+        SET
+        <trim suffixOverrides=",">
+        <if test="set.patName != null and set.patName!=''">
+            `pat_name` = #{set.patName},
+        </if>
+        <if test="set.patNumber != null and set.patNumber!=''">
+            `pat_number` = #{set.patNumber},
+        </if>
+        <if test="set.birthDay != null and set.birthDay!=''">
+            `birth_day` = #{set.birthDay},
+        </if>
+        <if test="set.gender != null and set.gender!=''">
+            `gender` = #{set.gender},
+        </if>
+        </trim>
+        <trim prefix="where" suffixOverrides="and | or">
+                <if test="where.idList != null">
+                    `id` in
+                    <foreach collection="where.idList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test="where.idSt !=null">
+                `id` >= #{where.idSt} and
+            </if>
+            <if test="where.idEd!=null">
+                `id` &lt;= #{where.idEd} and
+            </if>
+                <if test="where.patNameList != null">
+                    `pat_name` in
+                    <foreach collection="where.patNameList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test ="where.fuzzyPatName!=null and where.fuzzyPatName.size()>0">
+                (
+                <foreach collection="where.fuzzyPatName"  separator="or" item="item">
+                    `Pat_name` like concat('%',#{item},'%')
+                </foreach>
+                ) and
+            </if>
+            <if test ="where.rightFuzzyPatName!=null and where.rightFuzzyPatName.size()>0">
+                (
+                <foreach collection="where.rightFuzzyPatName"  separator="or" item="item">
+                    `Pat_name` like concat(#{item},'%')
+                </foreach>
+                ) and
+            </if>
+                <if test="where.patNumberList != null">
+                    `pat_number` in
+                    <foreach collection="where.patNumberList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test ="where.fuzzyPatNumber!=null and where.fuzzyPatNumber.size()>0">
+                (
+                <foreach collection="where.fuzzyPatNumber"  separator="or" item="item">
+                    `Pat_number` like concat('%',#{item},'%')
+                </foreach>
+                ) and
+            </if>
+            <if test ="where.rightFuzzyPatNumber!=null and where.rightFuzzyPatNumber.size()>0">
+                (
+                <foreach collection="where.rightFuzzyPatNumber"  separator="or" item="item">
+                    `Pat_number` like concat(#{item},'%')
+                </foreach>
+                ) and
+            </if>
+                <if test="where.birthDayList != null">
+                    `birth_day` in
+                    <foreach collection="where.birthDayList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test ="where.fuzzyBirthDay!=null and where.fuzzyBirthDay.size()>0">
+                (
+                <foreach collection="where.fuzzyBirthDay"  separator="or" item="item">
+                    `Birth_day` like concat('%',#{item},'%')
+                </foreach>
+                ) and
+            </if>
+            <if test ="where.rightFuzzyBirthDay!=null and where.rightFuzzyBirthDay.size()>0">
+                (
+                <foreach collection="where.rightFuzzyBirthDay"  separator="or" item="item">
+                    `Birth_day` like concat(#{item},'%')
+                </foreach>
+                ) and
+            </if>
+                <if test="where.genderList != null">
+                    `gender` in
+                    <foreach collection="where.genderList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test ="where.fuzzyGender!=null and where.fuzzyGender.size()>0">
+                (
+                <foreach collection="where.fuzzyGender"  separator="or" item="item">
+                    `Gender` like concat('%',#{item},'%')
+                </foreach>
+                ) and
+            </if>
+            <if test ="where.rightFuzzyGender!=null and where.rightFuzzyGender.size()>0">
+                (
+                <foreach collection="where.rightFuzzyGender"  separator="or" item="item">
+                    `Gender` like concat(#{item},'%')
+                </foreach>
+                ) and
+            </if>
+        </trim>
+    </update>
+
+
+    <resultMap type="net.lainiao.dicom.scp.entity.Patient" id="PatientMap">
+        <result property="id" column="id"/>
+        <result property="patName" column="pat_name"/>
+        <result property="patNumber" column="pat_number"/>
+        <result property="birthDay" column="birth_day"/>
+        <result property="gender" column="gender"/>
+    </resultMap>
+
+
+    <select id="queryPatient" resultMap="PatientMap">
+        select
+        <include refid="baseResult"></include>
+        from  `patient`
+        <trim prefix="where" suffixOverrides="and | or">
+            <if test="id != null">
+                `id` = #{id} and
+            </if>
+            <if test="patName != null and patName!=''">
+                `pat_name` = #{patName} and
+            </if>
+            <if test="patNumber != null and patNumber!=''">
+                `pat_number` = #{patNumber} and
+            </if>
+            <if test="birthDay != null and birthDay!=''">
+                `birth_day` = #{birthDay} and
+            </if>
+            <if test="gender != null and gender!=''">
+                `gender` = #{gender} and
+            </if>
+            <if test = "(_parameter instanceof net.lainiao.dicom.scp.entity.Patient$QueryBuilder) == true">
+                <if test="idList != null">
+                    `id` in
+                    <foreach collection="idList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test="idSt !=null">
+                    `id` >= #{idSt} and
+                </if>
+                <if test="idEd!=null">
+                    `id` &lt;= #{idEd} and
+                </if>
+                <if test="patNameList != null">
+                    `pat_name` in
+                    <foreach collection="patNameList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test ="fuzzyPatName!=null and fuzzyPatName.size()>0">
+                    (
+                    <foreach collection="fuzzyPatName"  separator="or" item="item">
+                        `Pat_name` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyPatName!=null and rightFuzzyPatName.size()>0">
+                    (
+                    <foreach collection="rightFuzzyPatName"  separator="or" item="item">
+                        `Pat_name` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test="patNumberList != null">
+                    `pat_number` in
+                    <foreach collection="patNumberList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test ="fuzzyPatNumber!=null and fuzzyPatNumber.size()>0">
+                    (
+                    <foreach collection="fuzzyPatNumber"  separator="or" item="item">
+                        `Pat_number` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyPatNumber!=null and rightFuzzyPatNumber.size()>0">
+                    (
+                    <foreach collection="rightFuzzyPatNumber"  separator="or" item="item">
+                        `Pat_number` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test="birthDayList != null">
+                    `birth_day` in
+                    <foreach collection="birthDayList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test ="fuzzyBirthDay!=null and fuzzyBirthDay.size()>0">
+                    (
+                    <foreach collection="fuzzyBirthDay"  separator="or" item="item">
+                        `Birth_day` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyBirthDay!=null and rightFuzzyBirthDay.size()>0">
+                    (
+                    <foreach collection="rightFuzzyBirthDay"  separator="or" item="item">
+                        `Birth_day` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test="genderList != null">
+                    `gender` in
+                    <foreach collection="genderList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test ="fuzzyGender!=null and fuzzyGender.size()>0">
+                    (
+                    <foreach collection="fuzzyGender"  separator="or" item="item">
+                        `Gender` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyGender!=null and rightFuzzyGender.size()>0">
+                    (
+                    <foreach collection="rightFuzzyGender"  separator="or" item="item">
+                        `Gender` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+            </if>
+        </trim>
+    </select>
+
+    <select id="queryPatientLimit1" resultMap="PatientMap">
+        select
+        <include refid="baseResult"></include>
+        from  `patient`
+        <trim prefix="where" suffixOverrides="and | or">
+            <if test="id != null">
+                `id` = #{id} and
+            </if>
+            <if test="patName != null and patName!=''">
+                `pat_name` = #{patName} and
+            </if>
+            <if test="patNumber != null and patNumber!=''">
+                `pat_number` = #{patNumber} and
+            </if>
+            <if test="birthDay != null and birthDay!=''">
+                `birth_day` = #{birthDay} and
+            </if>
+            <if test="gender != null and gender!=''">
+                `gender` = #{gender} and
+            </if>
+            <if test = "(_parameter instanceof net.lainiao.dicom.scp.entity.Patient$QueryBuilder) == true">
+                    <if test="idList != null">
+                        `id` in
+                        <foreach collection="idList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test="idSt !=null">
+                    `id` >= #{idSt} and
+                </if>
+                <if test="idEd!=null">
+                    `id` &lt;= #{idEd} and
+                </if>
+                    <if test="patNameList != null">
+                        `pat_name` in
+                        <foreach collection="patNameList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test ="fuzzyPatName!=null and fuzzyPatName.size()>0">
+                    (
+                    <foreach collection="fuzzyPatName"  separator="or" item="item">
+                        `Pat_name` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyPatName!=null and rightFuzzyPatName.size()>0">
+                    (
+                    <foreach collection="rightFuzzyPatName"  separator="or" item="item">
+                        `Pat_name` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                    <if test="patNumberList != null">
+                        `pat_number` in
+                        <foreach collection="patNumberList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test ="fuzzyPatNumber!=null and fuzzyPatNumber.size()>0">
+                    (
+                    <foreach collection="fuzzyPatNumber"  separator="or" item="item">
+                        `Pat_number` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyPatNumber!=null and rightFuzzyPatNumber.size()>0">
+                    (
+                    <foreach collection="rightFuzzyPatNumber"  separator="or" item="item">
+                        `Pat_number` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                    <if test="birthDayList != null">
+                        `birth_day` in
+                        <foreach collection="birthDayList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test ="fuzzyBirthDay!=null and fuzzyBirthDay.size()>0">
+                    (
+                    <foreach collection="fuzzyBirthDay"  separator="or" item="item">
+                        `Birth_day` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyBirthDay!=null and rightFuzzyBirthDay.size()>0">
+                    (
+                    <foreach collection="rightFuzzyBirthDay"  separator="or" item="item">
+                        `Birth_day` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                    <if test="genderList != null">
+                        `gender` in
+                        <foreach collection="genderList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test ="fuzzyGender!=null and fuzzyGender.size()>0">
+                    (
+                    <foreach collection="fuzzyGender"  separator="or" item="item">
+                        `Gender` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyGender!=null and rightFuzzyGender.size()>0">
+                    (
+                    <foreach collection="rightFuzzyGender"  separator="or" item="item">
+                        `Gender` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+            </if>
+        </trim>
+        limit 1
+    </select>
+
+    <sql id="allResult">
+        <trim suffixOverrides=",">
+        `id`,
+        `pat_name`,
+        `pat_number`,
+        `birth_day`,
+        `gender`,
+        </trim>
+    </sql>
+
+
+
+    <sql id="baseResult">
+        <trim suffixOverrides=",">
+            <if test = "(_parameter instanceof net.lainiao.dicom.scp.entity.Patient$QueryBuilder) == true">
+
+                <if test="fetchFields==null">
+                    <include refid="allResult"></include>
+                </if>
+                <if test="fetchFields!=null">
+                    <if test="fetchFields.AllFields !=null">
+                        <include refid="allResult"></include>
+                    </if>
+                    <if test="fetchFields.AllFields ==null and fetchFields.fetchFields==null and fetchFields.excludeFields==null and fetchFields.otherFields==null">
+                        <include refid="allResult"></include>
+                    </if>
+                    <if test="fetchFields.AllFields==null and fetchFields.fetchFields!=null">
+                    <if test="fetchFields.fetchFields.id==true">
+                        `id`,
+                    </if>
+                    <if test="fetchFields.fetchFields.patName==true">
+                        `pat_name`,
+                    </if>
+                    <if test="fetchFields.fetchFields.patNumber==true">
+                        `pat_number`,
+                    </if>
+                    <if test="fetchFields.fetchFields.birthDay==true">
+                        `birth_day`,
+                    </if>
+                    <if test="fetchFields.fetchFields.gender==true">
+                        `gender`,
+                    </if>
+                    </if>
+                    <if test="fetchFields.AllFields==null and fetchFields.excludeFields!=null">
+                    <if test="fetchFields.excludeFields.id==null">
+                        `id`,
+                    </if>
+                    <if test="fetchFields.excludeFields.patName==null">
+                        `pat_name`,
+                    </if>
+                    <if test="fetchFields.excludeFields.patNumber==null">
+                        `pat_number`,
+                    </if>
+                    <if test="fetchFields.excludeFields.birthDay==null">
+                        `birth_day`,
+                    </if>
+                    <if test="fetchFields.excludeFields.gender==null">
+                        `gender`,
+                    </if>
+                    </if>
+                    <if test="fetchFields.otherFields!=null and fetchFields.otherFields.size>0">
+                        <foreach collection="fetchFields.otherFields" index="index" item="item" separator=",">
+                        `#{item}`
+                        </foreach>
+                    </if>
+                </if>
+            </if>
+            <if test="(_parameter instanceof net.lainiao.dicom.scp.entity.Patient$QueryBuilder) == false" >
+                <include refid="allResult"></include>
+            </if>
+
+        </trim>
+    </sql>
+
+
+</mapper>

@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lainiao.dicom.scp.dao.base.StudyBaseMapper">
+
+
+    <insert id="insertStudy"  useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `study`
+        (
+        <trim suffixOverrides=",">
+                    <if test="id!=null">
+                        `id`,
+                    </if>
+                    <if test="patId!=null">
+                        `pat_id`,
+                    </if>
+                    <if test="studyUid!=null">
+                        `study_uid`,
+                    </if>
+                    <if test="modality!=null">
+                        `modality`,
+                    </if>
+                    <if test="accessionNo!=null">
+                        `accession_no`,
+                    </if>
+                    <if test="studyDate!=null">
+                        `study_date`,
+                    </if>
+        </trim>
+        )
+        VALUES
+        (
+        <trim suffixOverrides=",">
+                <if test="id!=null">
+                    #{id},
+                </if>
+                <if test="patId!=null">
+                    #{patId},
+                </if>
+                <if test="studyUid!=null">
+                    #{studyUid},
+                </if>
+                <if test="modality!=null">
+                    #{modality},
+                </if>
+                <if test="accessionNo!=null">
+                    #{accessionNo},
+                </if>
+                <if test="studyDate!=null">
+                    #{studyDate},
+                </if>
+        </trim>
+        )
+    </insert>
+
+
+
+
+    <update id="updateStudy">
+        UPDATE `study`
+        SET
+        <trim suffixOverrides=",">
+            <if test="patId != null">
+                `pat_id` = #{patId},
+            </if>
+            <if test="studyUid != null and studyUid!=''">
+                `study_uid` = #{studyUid},
+            </if>
+            <if test="modality != null and modality!=''">
+                `modality` = #{modality},
+            </if>
+            <if test="accessionNo != null and accessionNo!=''">
+                `accession_no` = #{accessionNo},
+            </if>
+            <if test="studyDate != null and studyDate!=''">
+                `study_date` = #{studyDate},
+            </if>
+        </trim>
+        WHERE
+        <trim suffixOverrides="and">
+                `id` = #{id} and
+        </trim>
+    </update>
+
+    <update id="update">
+        UPDATE `study`
+        SET
+        <trim suffixOverrides=",">
+        <if test="set.patId != null">
+            `pat_id` = #{set.patId},
+        </if>
+        <if test="set.studyUid != null and set.studyUid!=''">
+            `study_uid` = #{set.studyUid},
+        </if>
+        <if test="set.modality != null and set.modality!=''">
+            `modality` = #{set.modality},
+        </if>
+        <if test="set.accessionNo != null and set.accessionNo!=''">
+            `accession_no` = #{set.accessionNo},
+        </if>
+        <if test="set.studyDate != null and set.studyDate!=''">
+            `study_date` = #{set.studyDate},
+        </if>
+        </trim>
+        <trim prefix="where" suffixOverrides="and | or">
+                <if test="where.idList != null">
+                    `id` in
+                    <foreach collection="where.idList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test="where.idSt !=null">
+                `id` >= #{where.idSt} and
+            </if>
+            <if test="where.idEd!=null">
+                `id` &lt;= #{where.idEd} and
+            </if>
+                <if test="where.patIdList != null">
+                    `pat_id` in
+                    <foreach collection="where.patIdList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test="where.patIdSt !=null">
+                `pat_id` >= #{where.patIdSt} and
+            </if>
+            <if test="where.patIdEd!=null">
+                `pat_id` &lt;= #{where.patIdEd} and
+            </if>
+                <if test="where.studyUidList != null">
+                    `study_uid` in
+                    <foreach collection="where.studyUidList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test ="where.fuzzyStudyUid!=null and where.fuzzyStudyUid.size()>0">
+                (
+                <foreach collection="where.fuzzyStudyUid"  separator="or" item="item">
+                    `Study_uid` like concat('%',#{item},'%')
+                </foreach>
+                ) and
+            </if>
+            <if test ="where.rightFuzzyStudyUid!=null and where.rightFuzzyStudyUid.size()>0">
+                (
+                <foreach collection="where.rightFuzzyStudyUid"  separator="or" item="item">
+                    `Study_uid` like concat(#{item},'%')
+                </foreach>
+                ) and
+            </if>
+                <if test="where.modalityList != null">
+                    `modality` in
+                    <foreach collection="where.modalityList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test ="where.fuzzyModality!=null and where.fuzzyModality.size()>0">
+                (
+                <foreach collection="where.fuzzyModality"  separator="or" item="item">
+                    `Modality` like concat('%',#{item},'%')
+                </foreach>
+                ) and
+            </if>
+            <if test ="where.rightFuzzyModality!=null and where.rightFuzzyModality.size()>0">
+                (
+                <foreach collection="where.rightFuzzyModality"  separator="or" item="item">
+                    `Modality` like concat(#{item},'%')
+                </foreach>
+                ) and
+            </if>
+                <if test="where.accessionNoList != null">
+                    `accession_no` in
+                    <foreach collection="where.accessionNoList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test ="where.fuzzyAccessionNo!=null and where.fuzzyAccessionNo.size()>0">
+                (
+                <foreach collection="where.fuzzyAccessionNo"  separator="or" item="item">
+                    `Accession_no` like concat('%',#{item},'%')
+                </foreach>
+                ) and
+            </if>
+            <if test ="where.rightFuzzyAccessionNo!=null and where.rightFuzzyAccessionNo.size()>0">
+                (
+                <foreach collection="where.rightFuzzyAccessionNo"  separator="or" item="item">
+                    `Accession_no` like concat(#{item},'%')
+                </foreach>
+                ) and
+            </if>
+                <if test="where.studyDateList != null">
+                    `study_date` in
+                    <foreach collection="where.studyDateList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+            <if test ="where.fuzzyStudyDate!=null and where.fuzzyStudyDate.size()>0">
+                (
+                <foreach collection="where.fuzzyStudyDate"  separator="or" item="item">
+                    `Study_date` like concat('%',#{item},'%')
+                </foreach>
+                ) and
+            </if>
+            <if test ="where.rightFuzzyStudyDate!=null and where.rightFuzzyStudyDate.size()>0">
+                (
+                <foreach collection="where.rightFuzzyStudyDate"  separator="or" item="item">
+                    `Study_date` like concat(#{item},'%')
+                </foreach>
+                ) and
+            </if>
+        </trim>
+    </update>
+
+
+    <resultMap type="net.lainiao.dicom.scp.entity.Study" id="StudyMap">
+        <result property="id" column="id"/>
+        <result property="patId" column="pat_id"/>
+        <result property="studyUid" column="study_uid"/>
+        <result property="modality" column="modality"/>
+        <result property="accessionNo" column="accession_no"/>
+        <result property="studyDate" column="study_date"/>
+    </resultMap>
+
+
+    <select id="queryStudy" resultMap="StudyMap">
+        select
+        <include refid="baseResult"></include>
+        from  `study`
+        <trim prefix="where" suffixOverrides="and | or">
+            <if test="id != null">
+                `id` = #{id} and
+            </if>
+            <if test="patId != null">
+                `pat_id` = #{patId} and
+            </if>
+            <if test="studyUid != null and studyUid!=''">
+                `study_uid` = #{studyUid} and
+            </if>
+            <if test="modality != null and modality!=''">
+                `modality` = #{modality} and
+            </if>
+            <if test="accessionNo != null and accessionNo!=''">
+                `accession_no` = #{accessionNo} and
+            </if>
+            <if test="studyDate != null and studyDate!=''">
+                `study_date` = #{studyDate} and
+            </if>
+            <if test = "(_parameter instanceof net.lainiao.dicom.scp.entity.Study$QueryBuilder) == true">
+                <if test="idList != null">
+                    `id` in
+                    <foreach collection="idList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test="idSt !=null">
+                    `id` >= #{idSt} and
+                </if>
+                <if test="idEd!=null">
+                    `id` &lt;= #{idEd} and
+                </if>
+                <if test="patIdList != null">
+                    `pat_id` in
+                    <foreach collection="patIdList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test="patIdSt !=null">
+                    `pat_id` >= #{patIdSt} and
+                </if>
+                <if test="patIdEd!=null">
+                    `pat_id` &lt;= #{patIdEd} and
+                </if>
+                <if test="studyUidList != null">
+                    `study_uid` in
+                    <foreach collection="studyUidList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test ="fuzzyStudyUid!=null and fuzzyStudyUid.size()>0">
+                    (
+                    <foreach collection="fuzzyStudyUid"  separator="or" item="item">
+                        `Study_uid` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyStudyUid!=null and rightFuzzyStudyUid.size()>0">
+                    (
+                    <foreach collection="rightFuzzyStudyUid"  separator="or" item="item">
+                        `Study_uid` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test="modalityList != null">
+                    `modality` in
+                    <foreach collection="modalityList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test ="fuzzyModality!=null and fuzzyModality.size()>0">
+                    (
+                    <foreach collection="fuzzyModality"  separator="or" item="item">
+                        `Modality` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyModality!=null and rightFuzzyModality.size()>0">
+                    (
+                    <foreach collection="rightFuzzyModality"  separator="or" item="item">
+                        `Modality` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test="accessionNoList != null">
+                    `accession_no` in
+                    <foreach collection="accessionNoList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test ="fuzzyAccessionNo!=null and fuzzyAccessionNo.size()>0">
+                    (
+                    <foreach collection="fuzzyAccessionNo"  separator="or" item="item">
+                        `Accession_no` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyAccessionNo!=null and rightFuzzyAccessionNo.size()>0">
+                    (
+                    <foreach collection="rightFuzzyAccessionNo"  separator="or" item="item">
+                        `Accession_no` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test="studyDateList != null">
+                    `study_date` in
+                    <foreach collection="studyDateList" close=")" open="(" separator="," item="item">
+                        #{item}
+                    </foreach> and
+                </if>
+                <if test ="fuzzyStudyDate!=null and fuzzyStudyDate.size()>0">
+                    (
+                    <foreach collection="fuzzyStudyDate"  separator="or" item="item">
+                        `Study_date` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyStudyDate!=null and rightFuzzyStudyDate.size()>0">
+                    (
+                    <foreach collection="rightFuzzyStudyDate"  separator="or" item="item">
+                        `Study_date` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+            </if>
+        </trim>
+    </select>
+
+    <select id="queryStudyLimit1" resultMap="StudyMap">
+        select
+        <include refid="baseResult"></include>
+        from  `study`
+        <trim prefix="where" suffixOverrides="and | or">
+            <if test="id != null">
+                `id` = #{id} and
+            </if>
+            <if test="patId != null">
+                `pat_id` = #{patId} and
+            </if>
+            <if test="studyUid != null and studyUid!=''">
+                `study_uid` = #{studyUid} and
+            </if>
+            <if test="modality != null and modality!=''">
+                `modality` = #{modality} and
+            </if>
+            <if test="accessionNo != null and accessionNo!=''">
+                `accession_no` = #{accessionNo} and
+            </if>
+            <if test="studyDate != null and studyDate!=''">
+                `study_date` = #{studyDate} and
+            </if>
+            <if test = "(_parameter instanceof net.lainiao.dicom.scp.entity.Study$QueryBuilder) == true">
+                    <if test="idList != null">
+                        `id` in
+                        <foreach collection="idList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test="idSt !=null">
+                    `id` >= #{idSt} and
+                </if>
+                <if test="idEd!=null">
+                    `id` &lt;= #{idEd} and
+                </if>
+                    <if test="patIdList != null">
+                        `pat_id` in
+                        <foreach collection="patIdList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test="patIdSt !=null">
+                    `pat_id` >= #{patIdSt} and
+                </if>
+                <if test="patIdEd!=null">
+                    `pat_id` &lt;= #{patIdEd} and
+                </if>
+                    <if test="studyUidList != null">
+                        `study_uid` in
+                        <foreach collection="studyUidList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test ="fuzzyStudyUid!=null and fuzzyStudyUid.size()>0">
+                    (
+                    <foreach collection="fuzzyStudyUid"  separator="or" item="item">
+                        `Study_uid` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyStudyUid!=null and rightFuzzyStudyUid.size()>0">
+                    (
+                    <foreach collection="rightFuzzyStudyUid"  separator="or" item="item">
+                        `Study_uid` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                    <if test="modalityList != null">
+                        `modality` in
+                        <foreach collection="modalityList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test ="fuzzyModality!=null and fuzzyModality.size()>0">
+                    (
+                    <foreach collection="fuzzyModality"  separator="or" item="item">
+                        `Modality` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyModality!=null and rightFuzzyModality.size()>0">
+                    (
+                    <foreach collection="rightFuzzyModality"  separator="or" item="item">
+                        `Modality` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                    <if test="accessionNoList != null">
+                        `accession_no` in
+                        <foreach collection="accessionNoList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test ="fuzzyAccessionNo!=null and fuzzyAccessionNo.size()>0">
+                    (
+                    <foreach collection="fuzzyAccessionNo"  separator="or" item="item">
+                        `Accession_no` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyAccessionNo!=null and rightFuzzyAccessionNo.size()>0">
+                    (
+                    <foreach collection="rightFuzzyAccessionNo"  separator="or" item="item">
+                        `Accession_no` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                    <if test="studyDateList != null">
+                        `study_date` in
+                        <foreach collection="studyDateList" close=")" open="(" separator="," item="item">
+                            #{item}
+                        </foreach> and
+                    </if>
+                <if test ="fuzzyStudyDate!=null and fuzzyStudyDate.size()>0">
+                    (
+                    <foreach collection="fuzzyStudyDate"  separator="or" item="item">
+                        `Study_date` like concat('%',#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+                <if test ="rightFuzzyStudyDate!=null and rightFuzzyStudyDate.size()>0">
+                    (
+                    <foreach collection="rightFuzzyStudyDate"  separator="or" item="item">
+                        `Study_date` like concat(#{item},'%')
+                    </foreach>
+                    ) and
+                </if>
+            </if>
+        </trim>
+        limit 1
+    </select>
+
+    <sql id="allResult">
+        <trim suffixOverrides=",">
+        `id`,
+        `pat_id`,
+        `study_uid`,
+        `modality`,
+        `accession_no`,
+        `study_date`,
+        </trim>
+    </sql>
+
+
+
+    <sql id="baseResult">
+        <trim suffixOverrides=",">
+            <if test = "(_parameter instanceof net.lainiao.dicom.scp.entity.Study$QueryBuilder) == true">
+
+                <if test="fetchFields==null">
+                    <include refid="allResult"></include>
+                </if>
+                <if test="fetchFields!=null">
+                    <if test="fetchFields.AllFields !=null">
+                        <include refid="allResult"></include>
+                    </if>
+                    <if test="fetchFields.AllFields ==null and fetchFields.fetchFields==null and fetchFields.excludeFields==null and fetchFields.otherFields==null">
+                        <include refid="allResult"></include>
+                    </if>
+                    <if test="fetchFields.AllFields==null and fetchFields.fetchFields!=null">
+                    <if test="fetchFields.fetchFields.id==true">
+                        `id`,
+                    </if>
+                    <if test="fetchFields.fetchFields.patId==true">
+                        `pat_id`,
+                    </if>
+                    <if test="fetchFields.fetchFields.studyUid==true">
+                        `study_uid`,
+                    </if>
+                    <if test="fetchFields.fetchFields.modality==true">
+                        `modality`,
+                    </if>
+                    <if test="fetchFields.fetchFields.accessionNo==true">
+                        `accession_no`,
+                    </if>
+                    <if test="fetchFields.fetchFields.studyDate==true">
+                        `study_date`,
+                    </if>
+                    </if>
+                    <if test="fetchFields.AllFields==null and fetchFields.excludeFields!=null">
+                    <if test="fetchFields.excludeFields.id==null">
+                        `id`,
+                    </if>
+                    <if test="fetchFields.excludeFields.patId==null">
+                        `pat_id`,
+                    </if>
+                    <if test="fetchFields.excludeFields.studyUid==null">
+                        `study_uid`,
+                    </if>
+                    <if test="fetchFields.excludeFields.modality==null">
+                        `modality`,
+                    </if>
+                    <if test="fetchFields.excludeFields.accessionNo==null">
+                        `accession_no`,
+                    </if>
+                    <if test="fetchFields.excludeFields.studyDate==null">
+                        `study_date`,
+                    </if>
+                    </if>
+                    <if test="fetchFields.otherFields!=null and fetchFields.otherFields.size>0">
+                        <foreach collection="fetchFields.otherFields" index="index" item="item" separator=",">
+                        `#{item}`
+                        </foreach>
+                    </if>
+                </if>
+            </if>
+            <if test="(_parameter instanceof net.lainiao.dicom.scp.entity.Study$QueryBuilder) == false" >
+                <include refid="allResult"></include>
+            </if>
+
+        </trim>
+    </sql>
+
+
+</mapper>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lainiao.dicom.scp.dao.StudyMapper">
+
+
+    <select id="findStudyByUid" resultMap="net.lainiao.dicom.scp.dao.base.StudyBaseMapper.StudyMap">
+        select id from study where study_uid=#{uid}
+    </select>
+</mapper>
