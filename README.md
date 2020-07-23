@@ -12,7 +12,11 @@ Storage using MINIO/OSS
 
 Implementation of Dicom protocol using DCM4CHEE
 
+7.20
 At present, Dicom's receiving and storage has been realized. Next, DICOM will be parsed and archived. Some problems may be encountered in this part. Finally, a new project will be built to realize Dicom's Web reading function.
+
+7.23
+At present, the receiving, analyzing, and archiving functions of medical images have been completed, and the Dicom Web View function will be developed.
 
 
 #### Installation tutorial
