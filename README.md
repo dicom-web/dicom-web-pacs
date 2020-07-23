@@ -26,7 +26,7 @@ Each module can be started directly using java -jar
 
 1. web-pacs-scp is used to receive Dicom images transmitted by CT equipment
 
-2. web-pacs-view is used to display DICOM images on the web
+2. web-pacs-web is used to display DICOM images on the web
 
 
 #### contact me
